@@ -2,19 +2,19 @@ package Src.Domain.Server;
 
 import java.util.List;
 
-import Database.Cache.Cache;
-import Database.Data.Database;
+import Database.Cache.Hash.HashCache;
+import Database.Data.Hash.HashDatabase;
 import Src.Domain.Server.Interface.ServerInterface;
 import Src.Domain.ServiceOrder.ServiceOrder;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 
 public class Server implements ServerInterface {
-    private Database database;
-    private Cache cache;
+    private HashDatabase database;
+    private HashCache cache;
 
     public Server() {
-        this.database = new Database();
-        this.cache = new Cache();
+        this.database = new HashDatabase();
+        this.cache = new HashCache();
 
         for (int i = 1; i <= 60; i++) {
             ServiceOrder serviceOrder = new ServiceOrder();
@@ -23,6 +23,10 @@ public class Server implements ServerInterface {
             serviceOrder.setDescription("Descrição da Ordem de Serviço " + i);
 
             this.storeServiceOrder(serviceOrder);
+        }
+
+        for (int i = 1; i <= 20; i++) {
+            this.getServiceOrder(i);
         }
     }
 
@@ -55,7 +59,7 @@ public class Server implements ServerInterface {
 
     @Override
     public ServiceOrderInterface storeServiceOrder(ServiceOrderInterface serviceOrder) {
-        return this.database.insert(serviceOrder.getCode(), serviceOrder);
+        return this.database.insert(serviceOrder);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class Server implements ServerInterface {
     public void deleteServiceOrder(ServiceOrderInterface serviceOrder) {
         this.database.delete(serviceOrder.getCode());
 
-        this.cache.delete(serviceOrder);
+        this.cache.delete(serviceOrder.getCode());
     }
 
     @Override
