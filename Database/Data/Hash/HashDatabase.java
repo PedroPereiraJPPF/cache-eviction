@@ -19,7 +19,7 @@ public class HashDatabase implements Serializable {
     }
 
     public ServiceOrderInterface insert(ServiceOrderInterface order) {
-        if ((this.size + 1) >= this.capacity) {
+        if ((this.size + 1) >= this.capacity * 0.75) {
             this.resize();
         }
 
