@@ -34,13 +34,7 @@ public class HashCache {
 
         while (table[index] != null && table[index] != REMOVED) {
             k++;
-            index = hash(order.getCode(), k);
-
-            if (index == primaryHash) { // quando um ciclo é detectado remove um outro elemento aleatório
-                table[primaryHash] = order;
-
-                return order;
-            }
+            index = hash(index, k);
         }
 
         table[index] = order;
@@ -61,11 +55,7 @@ public class HashCache {
             }
 
             k++;
-            index = hash(key, k);
-
-            if (index == primaryHash) {
-                return null;
-            }
+            index = hash(index, k);
         }
 
         return null;
@@ -87,7 +77,7 @@ public class HashCache {
             }
 
             k++;
-            index = hash(key, k);
+            index = hash(index, k);
 
             if (index == primaryHash) {
                 return false;
@@ -98,7 +88,7 @@ public class HashCache {
     }
 
     private int hash(int key, int k) {
-        return Math.abs((key % this.capacity + k * (1 + key % (this.capacity - 1))) % this.capacity);
+        return Math.abs((key + k) % (this.capacity));
     }
 
     public void printElements() {
