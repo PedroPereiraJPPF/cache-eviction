@@ -5,7 +5,6 @@ import Src.Domain.ServiceOrder.ServiceOrderInterface;
 import Utils.Logger;
 
 public class HashCache {
-    private final float constA = 0.6180339887f; 
     private int capacity;
     private int size;
     private ServiceOrderInterface[] table;
@@ -23,8 +22,8 @@ public class HashCache {
             return null;
         }
 
-        int primaryHash = primaryHash(order.getCode());
         int k = 0;
+        int primaryHash = hash(order.getCode(), k);
         int index = primaryHash;
 
         if (this.size >= this.capacity) {
@@ -35,7 +34,13 @@ public class HashCache {
 
         while (table[index] != null && table[index] != REMOVED) {
             k++;
-            index = hash(order.getCode(), ++k);
+            index = hash(order.getCode(), k);
+
+            if (index == primaryHash) { // quando um ciclo é detectado remove um outro elemento aleatório
+                table[primaryHash] = order;
+
+                return order;
+            }
         }
 
         table[index] = order;
@@ -45,8 +50,8 @@ public class HashCache {
     }
 
     public ServiceOrderInterface find(int key) {
-        int primaryHash = primaryHash(key);
         int k = 0;
+        int primaryHash = hash(key, k);
         int index = primaryHash;
 
         while (table[index] != null) {
@@ -56,7 +61,7 @@ public class HashCache {
             }
 
             k++;
-            index = hash(key, ++k);
+            index = hash(key, k);
 
             if (index == primaryHash) {
                 return null;
@@ -67,8 +72,8 @@ public class HashCache {
     }
 
     public boolean delete(int key) {
-        int primaryHash = primaryHash(key);
         int k = 0;
+        int primaryHash = hash(key, k);
         int index = primaryHash;
 
         while (table[index] != null) {
@@ -82,7 +87,7 @@ public class HashCache {
             }
 
             k++;
-            index = hash(key, ++k);
+            index = hash(key, k);
 
             if (index == primaryHash) {
                 return false;
@@ -93,17 +98,7 @@ public class HashCache {
     }
 
     private int hash(int key, int k) {
-        return (primaryHash(key) + k * secondHash(key)) % capacity;
-    }
-
-    private int primaryHash(int key) {
-        float temp = key * constA;
-        temp = temp - (long) temp;
-        return (int) (capacity * temp);
-    }
-
-    private int secondHash(int key) {
-        return 1 + (key % (capacity - 1));
+        return Math.abs((key % this.capacity + k * (1 + key % (this.capacity - 1))) % this.capacity);
     }
 
     public void printElements() {

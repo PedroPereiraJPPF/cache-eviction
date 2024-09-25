@@ -82,7 +82,7 @@ public class Server implements ServerInterface {
 
     @Override
     public ServiceOrderInterface updateServiceOrder(ServiceOrderInterface data) {
-        ServiceOrderInterface serviceOrder = this.getServiceOrder(data);
+        ServiceOrderInterface serviceOrder = this.database.search(data.getCode());
 
         if (serviceOrder == null)
             return null;
