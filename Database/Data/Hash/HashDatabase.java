@@ -89,7 +89,7 @@ public class HashDatabase implements Serializable {
     // usando o metodo da mutiplicacao. pois ele tem um bom espalhamento e é menos dependente do tamanho da tabela
     private int hash(int key) {
         float temp = key * constA;
-        temp = temp - (long) temp;
+        temp = temp - (int) temp;
         return (int) (capacity * temp);
     }
 
