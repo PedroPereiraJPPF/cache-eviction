@@ -87,13 +87,21 @@ public class ClientView {
         serviceOrder.setCode(this.scanner.nextInt());
         this.scanner.nextLine();
         
+        if (serviceOrder.getCode() < 0) {
+            System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
+            return;
+        }
+
         System.out.print("Nome da Ordem de Serviço: ");
         serviceOrder.setName(this.scanner.nextLine());
 
         System.out.print("Descrição da Ordem de Serviço: ");
         serviceOrder.setDescription(this.scanner.nextLine());
 
-        client.storeServiceOrder(serviceOrder);
+        if (client.storeServiceOrder(serviceOrder) == null) {
+            System.out.println(RED + "Order de serviço de codigo " + serviceOrder.getCode() + " já cadastrada." + CROSS + RESET);
+            return;
+        }
         System.out.println(GREEN + "Ordem de serviço armazenada com sucesso. " + CHECK + RESET);
     }
 
@@ -101,6 +109,11 @@ public class ClientView {
         System.out.print(CYAN + ARROW + " Digite o ID da Ordem de Serviço: " + RESET);
         int id = scanner.nextInt();
         scanner.nextLine();
+
+        if (id < 0) {
+            System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
+            return;
+        }
 
         if (client.deleteServiceOrder(id)) {
             System.out.println(GREEN + "Ordem de serviço deletada com sucesso. " + CHECK + RESET);
@@ -130,6 +143,11 @@ public class ClientView {
         System.out.print("ID da Ordem de Serviço: ");
         serviceOrder.setCode(this.scanner.nextInt());
         this.scanner.nextLine();
+
+        if (serviceOrder.getCode() < 0) {
+            System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
+            return;
+        }
         
         System.out.print("Nome da Ordem de Serviço: ");
         serviceOrder.setName(this.scanner.nextLine());

@@ -16,7 +16,7 @@ public class Server implements ServerInterface {
         this.database = new HashDatabase();
         this.cache = new HashCache();
 
-        for (int i = 1; i <= 60; i++) {
+        for (int i = 1; i <= 70; i++) {
             ServiceOrder serviceOrder = new ServiceOrder();
             serviceOrder.setCode(i);
             serviceOrder.setName("Ordem de Serviço " + i);
@@ -49,6 +49,8 @@ public class Server implements ServerInterface {
 
         this.cache.insert(value);
 
+        this.cache.printElements();
+
         return value;
     }
 
@@ -59,6 +61,10 @@ public class Server implements ServerInterface {
 
     @Override
     public ServiceOrderInterface storeServiceOrder(ServiceOrderInterface serviceOrder) {
+        if (this.database.search(serviceOrder.getCode()) != null) {
+            return null;
+        }
+
         return this.database.insert(serviceOrder);
     }
 

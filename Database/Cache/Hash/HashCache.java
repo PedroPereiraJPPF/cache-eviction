@@ -41,8 +41,6 @@ public class HashCache {
         table[index] = order;
         this.size++;
 
-        this.printElements();
-
         return order;
     }
 
@@ -108,7 +106,7 @@ public class HashCache {
         return 1 + (key % (capacity - 1));
     }
 
-    private void printElements() {
+    public void printElements() {
         for (int i = 0; i < capacity; i++) {
             if (this.table[i] != null) {
                 this.logger.info(i + " - " + (table[i].getCode()));

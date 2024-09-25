@@ -1,9 +1,12 @@
 import Src.View.Client.ClientView;
+import Utils.Logger;
 
 public class Main {
     public static void main(String[] args) {
-        ClientView clientView = new ClientView();
-
-        clientView.start();
+        try {
+            new ClientView().start();
+        } catch(Exception e) {
+            new Logger("Logs/ServerLogs.log").error(e.getMessage());
+        }
     }
 }
