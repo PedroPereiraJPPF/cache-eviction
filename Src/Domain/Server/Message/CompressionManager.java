@@ -6,16 +6,28 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class CompressionManager {
-    public static CompressedObject codifyParameter(String value) {
+    public static CompressedObject codifyParameter(String[] values) {
+        String value = "";
+
+        for (String v : values) {
+            if (v != null) {
+                value += v;
+            }
+        }
+
         Map<Character, Integer> frequencyTable = createFrequencyTable(value);
         RuffmanTree ruffmanTree = new RuffmanTree(frequencyTable);
 
-        CompressedObject compressedValue = new CompressedObject(codifyParameter(value, ruffmanTree.getcodesTable()), frequencyTable);
+        CompressedObject compressedValue = new CompressedObject(codifyParameter(values, ruffmanTree.getcodesTable()), frequencyTable);
 
         return compressedValue;
     }
 
-    public static String codifyParameter(String value, Map<Character, String> codesTable) {
+    private static String codifyParameter(String value, Map<Character, String> codesTable) {
+        if (value == null) {
+            return null;
+        }
+
         String encodedValue = "";
 
         for (char c : value.toCharArray()) {
@@ -25,12 +37,22 @@ public class CompressionManager {
         return encodedValue;
     }
 
-    public static String decodeParameter(CompressedObject compressedObject) {
-        RuffmanTree ruffmanTree = new RuffmanTree(compressedObject.getFrequencyTable());
+    private static String[] codifyParameter(String[] values, Map<Character, String> codesTables) {
+        String[] codifiedValues = new String[values.length];
+        
+        for (int i = 0; i < values.length; i++) {
+            codifiedValues[i] = values[i] == null ? null : codifyParameter(values[i], codesTables);
+        }
+
+        return codifiedValues;
+    }
+
+    public static String decodeParameter(String value, Map<Character, Integer> frequencyTable) {
+        RuffmanTree ruffmanTree = new RuffmanTree(frequencyTable);
         Node current = ruffmanTree.getNode();
         String message = "";
 
-        for (char c : compressedObject.getValue().toCharArray()) {
+        for (char c : value.toCharArray()) {
             if (c == '0') {
                 current = current.left;
             } else {

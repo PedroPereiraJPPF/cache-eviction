@@ -1,60 +1,72 @@
 package Src.Domain.Server.Message;
 import java.util.Date;
 
-// testar a abordagem de mandar todos os dados juntos separados por "/"
-
 public class Message {
-    private CompressedObject code, name, description, requestTime;
+    private String[] values;
+    private CompressedObject codifiedValues;
 
-    public Message() {}
+    public Message() {
+        this.values = new String[4];
+    }
 
     public Message(String name, String description) {
-        this.setName(name);
-        this.setDescription(description);
+        this.values = new String[4];
+
+        this.values[0] = null;
+        this.values[1] = name;
+        this.values[2] = description;
+        this.values[3] = null;
+
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
     public Message(String name, String description, Date requestTime) {
-        this.setName(name);
-        this.setDescription(description);
-        this.setRequestTime(requestTime);
+        this.values = new String[4];
+
+        this.values[0] = null;
+        this.values[1] = name;
+        this.values[2] = description;
+        this.values[3] = requestTime.toString();
+
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
     public Message(int code, String name, String description, Date requestTime) {
-        this.setCode(code);
-        this.setName(name);
-        this.setDescription(description);
-        this.setRequestTime(requestTime);
+        this.values = new String[4];
+
+        this.values[0] = String.valueOf(code);
+        this.values[1] = name;
+        this.values[2] = description;
+        this.values[3] = requestTime.toString();
+
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
-    public CompressedObject getCode() {
-        return this.code;
+    public CompressedObject getData() {
+        return this.codifiedValues;
     }
 
     public void setCode(int code) {
-        this.code = CompressionManager.codifyParameter(String.valueOf(code));
+        this.values[0] = String.valueOf(code);
+
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
     public void setName(String name) {
-        this.name = CompressionManager.codifyParameter(name);
-    }
+        this.values[1] = name;
 
-    public CompressedObject getName() {
-        return this.name;
-    }
-
-    public CompressedObject getDescription() {
-        return this.description;
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
     public void setDescription(String description) {
-        this.description = CompressionManager.codifyParameter(description);
-    }
+        this.values[2] = description;
 
-    public CompressedObject getRequestTime() {
-        return this.requestTime;
+        this.codifiedValues = CompressionManager.codifyParameter(values);
     }
 
     public void setRequestTime(Date requestTime) {
-        this.requestTime = CompressionManager.codifyParameter(requestTime.toString());
+        this.values[3] = requestTime.toString();
+
+        this.codifiedValues = CompressionManager.codifyParameter(this.values);
     }
 }

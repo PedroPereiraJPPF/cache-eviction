@@ -16,14 +16,12 @@ public class ServiceOrder implements ServiceOrderInterface {
     }
 
     public ServiceOrder(int code) {
-        codeCount++;
-        this.code = codeCount;
+        this.code = code;
         this.requestTime = new Date();
     }
 
     public ServiceOrder(int code, String name, String description) {
-        codeCount++;
-        this.code = codeCount;
+        this.code = code;
         this.name = name;
         this.description = description;
         this.requestTime = new Date();

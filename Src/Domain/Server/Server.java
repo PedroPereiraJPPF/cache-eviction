@@ -1,16 +1,15 @@
 package Src.Domain.Server;
 
 import java.util.List;
-import java.util.Date;
 import Database.Cache.Hash.HashCache;
 import Database.Data.Hash.HashDatabase;
 import Src.Domain.Server.Interface.ServerInterface;
+import Src.Domain.Server.Message.CompressedObject;
 import Src.Domain.Server.Message.CompressionManager;
 import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrder;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class Server implements ServerInterface {
     private HashDatabase database;
@@ -41,7 +40,10 @@ public class Server implements ServerInterface {
     @Override
     public ServiceOrderInterface getServiceOrder(Message message) {
         ServiceOrderInterface value = new ServiceOrder();
-        value.setCode(Integer.valueOf(CompressionManager.decodeParameter(message.getCode())));
+
+        CompressedObject data = message.getData();
+
+        value.setCode(Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable())));
 
         return this.getServiceOrder(value);
     }
@@ -72,9 +74,11 @@ public class Server implements ServerInterface {
 
     @Override
     public ServiceOrderInterface storeServiceOrder(Message message) {
+        CompressedObject data = message.getData();
+
         ServiceOrderInterface serviceOrder = new ServiceOrder();
-        serviceOrder.setName(CompressionManager.decodeParameter(message.getName()));
-        serviceOrder.setDescription(CompressionManager.decodeParameter(message.getDescription()));
+        serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
+        serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
 
         return this.database.insert(serviceOrder);
     }
@@ -90,7 +94,11 @@ public class Server implements ServerInterface {
 
     @Override
     public void deleteServiceOrder(Message message) {
-        this.deleteServiceOrder(Integer.valueOf(CompressionManager.decodeParameter(message.getCode())));
+        CompressedObject data = message.getData();
+
+        int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
+
+        this.deleteServiceOrder(code);
     }
 
     @Override
@@ -107,16 +115,18 @@ public class Server implements ServerInterface {
 
     @Override
     public ServiceOrderInterface updateServiceOrder(Message message) throws ParseException {
-        ServiceOrderInterface serviceOrder = new ServiceOrder();
+        CompressedObject data = message.getData();
 
-        serviceOrder.setCode(Integer.valueOf(CompressionManager.decodeParameter(message.getCode())));
-        serviceOrder.setName(CompressionManager.decodeParameter(message.getName()));
-        serviceOrder.setDescription(CompressionManager.decodeParameter(message.getDescription()));
-        
-        String decodedRequestTime = CompressionManager.decodeParameter(message.getRequestTime());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date requestTime = dateFormat.parse(decodedRequestTime);
-        serviceOrder.setRequestTime(requestTime);
+        int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
+
+        ServiceOrderInterface serviceOrder = this.getServiceOrder(code);
+
+        if (serviceOrder == null)
+            return null;
+
+        serviceOrder.setCode(code);
+        serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
+        serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
 
         return serviceOrder;
     }

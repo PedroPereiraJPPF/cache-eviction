@@ -2,11 +2,11 @@ package Src.Domain.Server.Message;
 import java.util.Map;
 
 public class CompressedObject {
-    private String value;
+    private String[] values;
     private Map<Character, Integer> frequencyTable;
 
-    public CompressedObject(String value, Map<Character, Integer> frequencyTable) {
-        this.value = value;
+    public CompressedObject(String[] values, Map<Character, Integer> frequencyTable) {
+        this.values = values;
         this.frequencyTable = frequencyTable;
     }
 
@@ -14,7 +14,7 @@ public class CompressedObject {
         return this.frequencyTable;
     }
 
-    public String getValue() {
-        return this.value;
+    public String[] getValues() {
+        return this.values;
     }
 }
