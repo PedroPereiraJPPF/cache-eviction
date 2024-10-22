@@ -5,7 +5,7 @@ import java.util.Date;
 
 public interface ServiceOrderInterface extends Serializable {
     public void setCode(int code);
-    
+
     public int getCode();
     
     public void setName(String name);

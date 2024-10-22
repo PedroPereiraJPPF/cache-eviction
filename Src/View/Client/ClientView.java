@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Src.Domain.Client.Client;
-import Src.Domain.ServiceOrder.ServiceOrder;
+import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 
 public class ClientView {
@@ -79,29 +79,18 @@ public class ClientView {
     }
 
     public void storeServiceOrder() {
-        ServiceOrder serviceOrder = new ServiceOrder();
+        Message message = new Message();
 
         System.out.println("Digite os detalhes da ordem de serviço:");
-        
-        System.out.print("ID da Ordem de Serviço: ");
-        serviceOrder.setCode(this.scanner.nextInt());
-        this.scanner.nextLine();
-        
-        if (serviceOrder.getCode() < 0) {
-            System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
-            return;
-        }
 
         System.out.print("Nome da Ordem de Serviço: ");
-        serviceOrder.setName(this.scanner.nextLine());
+        message.setName(this.scanner.nextLine());
 
         System.out.print("Descrição da Ordem de Serviço: ");
-        serviceOrder.setDescription(this.scanner.nextLine());
+        message.setDescription(this.scanner.nextLine());
 
-        if (client.storeServiceOrder(serviceOrder) == null) {
-            System.out.println(RED + "Order de serviço de codigo " + serviceOrder.getCode() + " já cadastrada." + CROSS + RESET);
-            return;
-        }
+        client.storeServiceOrder(message);
+
         System.out.println(GREEN + "Ordem de serviço armazenada com sucesso. " + CHECK + RESET);
     }
 
@@ -110,12 +99,15 @@ public class ClientView {
         int id = scanner.nextInt();
         scanner.nextLine();
 
+        Message message = new Message();
+        message.setCode(id);
+
         if (id < 0) {
             System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
             return;
         }
 
-        if (client.deleteServiceOrder(id)) {
+        if (client.deleteServiceOrder(message)) {
             System.out.println(GREEN + "Ordem de serviço deletada com sucesso. " + CHECK + RESET);
         } else {
             System.out.println(RED + "Falha ao deletar a ordem de serviço. " + CROSS + RESET);
@@ -127,7 +119,10 @@ public class ClientView {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        ServiceOrderInterface serviceOrder = client.getServiceOrder(id);
+        Message message = new Message();
+        message.setCode(id);
+
+        ServiceOrderInterface serviceOrder = client.getServiceOrder(message);
         if (serviceOrder != null) {
             System.out.println(GREEN + "Ordem de serviço encontrada: " + CHECK + " " + serviceOrder + RESET);
         } else {
@@ -136,26 +131,27 @@ public class ClientView {
     }
 
     public void updateServiceOrder() {
-        ServiceOrder serviceOrder = new ServiceOrder();
+        Message message = new Message();
 
         System.out.println("Digite os detalhes da ordem de serviço:");
         
         System.out.print("ID da Ordem de Serviço: ");
-        serviceOrder.setCode(this.scanner.nextInt());
+        int id = this.scanner.nextInt();
+        message.setCode(id);
         this.scanner.nextLine();
 
-        if (serviceOrder.getCode() < 0) {
+        if (id < 0) {
             System.out.println(RED + "ID da ordem de serviço inválido. " + CROSS + RESET);
             return;
         }
         
         System.out.print("Nome da Ordem de Serviço: ");
-        serviceOrder.setName(this.scanner.nextLine());
+        message.setName(this.scanner.nextLine());
 
         System.out.print("Descrição da Ordem de Serviço: ");
-        serviceOrder.setDescription(this.scanner.nextLine());
+        message.setDescription(this.scanner.nextLine());
 
-        ServiceOrderInterface order = client.updateServiceOrder(serviceOrder);
+        ServiceOrderInterface order = client.updateServiceOrder(message);
 
         if (order == null) {
             System.out.println(RED + "Falha ao atualizar a ordem de serviço. " + CROSS + RESET);

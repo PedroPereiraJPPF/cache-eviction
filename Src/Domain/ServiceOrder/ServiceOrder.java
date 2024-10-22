@@ -3,22 +3,27 @@ package Src.Domain.ServiceOrder;
 import java.util.Date;
 
 public class ServiceOrder implements ServiceOrderInterface {
+    private static int codeCount = 0;
     private int code;
     private String name;
     private String description;
     private Date requestTime;
 
     public ServiceOrder() {
+        codeCount++;
+        this.code = codeCount;
         this.requestTime = new Date();
     }
 
     public ServiceOrder(int code) {
-        this.code = code;
+        codeCount++;
+        this.code = codeCount;
         this.requestTime = new Date();
     }
 
     public ServiceOrder(int code, String name, String description) {
-        this.code = code;
+        codeCount++;
+        this.code = codeCount;
         this.name = name;
         this.description = description;
         this.requestTime = new Date();

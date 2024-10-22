@@ -1,10 +1,12 @@
 package Src.Domain.Client;
 
+import java.text.ParseException;
 import java.util.List;
 
 import Src.Domain.Client.Interface.ClientInterface;
 import Src.Domain.Server.Server;
 import Src.Domain.Server.Interface.ServerInterface;
+import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 
 public class Client implements ClientInterface {
@@ -22,37 +24,29 @@ public class Client implements ClientInterface {
     }
 
     @Override
-    public ServiceOrderInterface storeServiceOrder(ServiceOrderInterface serviceOrder) {
-        return this.server.storeServiceOrder(serviceOrder);
+    public ServiceOrderInterface storeServiceOrder(Message message) {
+        return this.server.storeServiceOrder(message);
     }
 
     @Override
-    public boolean deleteServiceOrder(int orderId) {
-        this.server.deleteServiceOrder(orderId);
+    public boolean deleteServiceOrder(Message message) {
+        this.server.deleteServiceOrder(message);
 
         return true;
     }
 
     @Override
-    public boolean deleteServiceOrder(ServiceOrderInterface serviceOrder) {
-        this.server.deleteServiceOrder(serviceOrder);
-
-        return true;
+    public ServiceOrderInterface getServiceOrder(Message message) {
+        return this.server.getServiceOrder(message);
     }
 
     @Override
-    public ServiceOrderInterface getServiceOrder(int orderId) {
-        return this.server.getServiceOrder(orderId);
-    }
-
-    @Override
-    public ServiceOrderInterface getServiceOrder(ServiceOrderInterface serviceOrder) {
-        return this.server.getServiceOrder(serviceOrder);
-    }
-
-    @Override
-    public ServiceOrderInterface updateServiceOrder(ServiceOrderInterface serviceOrder) {
-        return this.server.updateServiceOrder(serviceOrder);
+    public ServiceOrderInterface updateServiceOrder(Message message) {
+        try {
+            return this.server.updateServiceOrder(message);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @Override
