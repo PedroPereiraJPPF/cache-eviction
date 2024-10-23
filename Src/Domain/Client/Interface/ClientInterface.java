@@ -18,4 +18,5 @@ public interface ClientInterface {
     public ServiceOrderInterface updateServiceOrder(Message message);
     public List<ServiceOrderInterface> listServiceOrders() throws ParseException;
     public int countServiceOrders();
+    public int[] countOperations();
 }

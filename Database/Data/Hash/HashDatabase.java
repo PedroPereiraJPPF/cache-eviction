@@ -13,6 +13,7 @@ public class HashDatabase implements Serializable {
     private int size;
     private CustomLinkedList[] table;
     private Logger logger = new Logger("Logs/DatabaseLogs.log");
+    private Logger opLogger = new Logger("Logs/OperationsLogs.log");
     
     public HashDatabase() {
         this.capacity = 20;
@@ -26,6 +27,8 @@ public class HashDatabase implements Serializable {
         }
 
         int key = hash(order.getCode());
+
+        this.opLogger.info("INSERT");
 
         if (table[key] == null) {
             table[key] = new CustomLinkedList(order);
@@ -64,6 +67,8 @@ public class HashDatabase implements Serializable {
             this.size--;
         }
 
+        this.opLogger.info("DELETE");
+
         return result;
     }
 
@@ -88,7 +93,6 @@ public class HashDatabase implements Serializable {
         return this.size;
     }
 
-    // usando o metodo da mutiplicacao. pois ele tem um bom espalhamento e é menos dependente do tamanho da tabela
     private int hash(int key) {
         float temp = key * constA;
         temp = temp - (int) temp;

@@ -10,12 +10,14 @@ import Src.Domain.Server.Message.CompressionManager;
 import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrder;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
+import Utils.Logger;
 
 import java.text.ParseException;
 
 public class Server implements ServerInterface {
     private HashDatabase database;
     private PriorityQueueCache cache;
+    private Logger opLogger = new Logger("Logs/OperationsLogs.log");
 
     public Server() {
         this.database = new HashDatabase();
@@ -155,6 +157,8 @@ public class Server implements ServerInterface {
         if (serviceOrder == null)
             return null;
 
+        this.opLogger.info("UPDATE");
+
         serviceOrder.setCode(code);
         serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
         serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
@@ -183,5 +187,9 @@ public class Server implements ServerInterface {
     @Override
     public int countServiceOrders() {
         return this.database.countElements();    
+    }
+
+    public int countOperation(String search) {
+        return this.opLogger.countOperation(search);
     }
 }

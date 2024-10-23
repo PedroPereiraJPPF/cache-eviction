@@ -58,6 +58,10 @@ public class Client implements ClientInterface {
         try {
             Message serverMessage = this.server.updateServiceOrder(message);
 
+            if (serverMessage == null) {
+                return null;
+            }
+
             return this.messageToServiceOrder(serverMessage);
         } catch (ParseException e) {
             return null;
@@ -80,6 +84,16 @@ public class Client implements ClientInterface {
     @Override
     public int countServiceOrders() {
         return this.server.listServiceOrders().size();
+    }
+
+    public int[] countOperations() {
+        int[] operationsCount = {0 , 0, 0};
+
+        operationsCount[0] = this.server.countOperation("INSERT");
+        operationsCount[1] = this.server.countOperation("UPDATE");
+        operationsCount[2] = this.server.countOperation("DELETE");
+
+        return operationsCount;
     }
 
     private ServiceOrderInterface messageToServiceOrder(Message message) throws ParseException {

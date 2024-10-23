@@ -41,7 +41,8 @@ public class ClientView {
                 System.out.println(YELLOW + "4. " + ARROW + " Atualizar Ordem de Serviço" + RESET);
                 System.out.println(YELLOW + "5. " + ARROW + " Listar Todas as Ordens de Serviço" + RESET);
                 System.out.println(YELLOW + "6. " + ARROW + " Contar Todas as Ordens de Serviço" + RESET);
-                System.out.println(RED + "7. " + ARROW + " Sair" + RESET);
+                System.out.println(YELLOW + "7. " + ARROW + " Contar Todas as operações feitas" + RESET);
+                System.out.println(RED + "8. " + ARROW + " Sair" + RESET);
                 System.out.print(CYAN + "Escolha uma opção: " + RESET);
             
                 int choice = scanner.nextInt();
@@ -67,6 +68,9 @@ public class ClientView {
                         countServiceOrders();
                         break;
                     case 7:
+                        countOperations();
+                        break;
+                    case 8:
                         System.out.println(PURPLE + "Saindo... " + CROSS + RESET);
                         return;
                     default:
@@ -183,5 +187,13 @@ public class ClientView {
         } else {
             System.out.println(GREEN + "Contagem de ordens de serviço: " + client.countServiceOrders() + RESET);
         }
+    }
+
+    public void countOperations() throws ParseException {
+        int[] operationsCount = client.countOperations();
+        
+        System.out.println(GREEN + "Inserções: " + operationsCount[0] + RESET);
+        System.out.println(GREEN + "Atualizações: " + operationsCount[1] + RESET);
+        System.out.println(GREEN + "Deleções: " + operationsCount[2] + RESET);
     }
 }

@@ -19,4 +19,5 @@ public interface ServerInterface {
     public Message updateServiceOrder(Message Message) throws ParseException;
     public ServiceOrderInterface updateServiceOrder(ServiceOrderInterface serviceOrder);
     public int countServiceOrders();
+    public int countOperation(String search);
 }

@@ -1,6 +1,8 @@
 package Utils;
 
 import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,5 +58,36 @@ public class Logger {
             e.printStackTrace();
         }
     }
+
+    public int countOperation(String searchString) {
+        int count = 0;
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(this.logFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String logMessage = line.substring(line.indexOf("INFO: ") + 6).trim();
+    
+                if (logMessage.length() >= searchString.length()) {
+                    boolean match = true;
+    
+                    for (int i = 0; i < searchString.length(); i++) {
+                        if (logMessage.charAt(i) != searchString.charAt(i)) {
+                            match = false; 
+                            break;
+                        }
+                    }
+    
+                    if (match) {
+                        count++;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+        return count;
+    }
+
 }
 
