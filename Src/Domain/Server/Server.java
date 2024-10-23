@@ -38,14 +38,21 @@ public class Server implements ServerInterface {
     }
 
     @Override
-    public ServiceOrderInterface getServiceOrder(Message message) {
+    public Message getServiceOrder(Message message) {
         ServiceOrderInterface value = new ServiceOrder();
 
         CompressedObject data = message.getData();
 
         value.setCode(Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable())));
 
-        return this.getServiceOrder(value);
+        value = this.getServiceOrder(value);
+
+        if (value == null)
+            return null;
+
+        Message compactedMessage = new Message(value.getCode(), value.getName(), value.getDescription(), value.getRequestTime());
+
+        return compactedMessage;
     }
 
     @Override
@@ -73,14 +80,18 @@ public class Server implements ServerInterface {
     }
 
     @Override
-    public ServiceOrderInterface storeServiceOrder(Message message) {
+    public Message storeServiceOrder(Message message) {
         CompressedObject data = message.getData();
 
         ServiceOrderInterface serviceOrder = new ServiceOrder();
         serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
         serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
 
-        return this.database.insert(serviceOrder);
+        serviceOrder = this.database.insert(serviceOrder);
+
+        Message compactedMessage = new Message(serviceOrder.getCode(), serviceOrder.getName(), serviceOrder.getDescription(), serviceOrder.getRequestTime());
+
+        return compactedMessage;
     }
 
     @Override
@@ -114,7 +125,7 @@ public class Server implements ServerInterface {
     }
 
     @Override
-    public ServiceOrderInterface updateServiceOrder(Message message) throws ParseException {
+    public Message updateServiceOrder(Message message) throws ParseException {
         CompressedObject data = message.getData();
 
         int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
@@ -128,7 +139,9 @@ public class Server implements ServerInterface {
         serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
         serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
 
-        return serviceOrder;
+        Message compactedMessage = new Message(serviceOrder.getCode(), serviceOrder.getName(), serviceOrder.getDescription(), serviceOrder.getRequestTime());
+
+        return compactedMessage;
     }
 
     @Override

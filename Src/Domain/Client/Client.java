@@ -1,12 +1,17 @@
 package Src.Domain.Client;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import Src.Domain.Client.Interface.ClientInterface;
 import Src.Domain.Server.Server;
 import Src.Domain.Server.Interface.ServerInterface;
+import Src.Domain.Server.Message.CompressedObject;
+import Src.Domain.Server.Message.CompressionManager;
 import Src.Domain.Server.Message.Message;
+import Src.Domain.ServiceOrder.ServiceOrder;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 
 public class Client implements ClientInterface {
@@ -24,8 +29,10 @@ public class Client implements ClientInterface {
     }
 
     @Override
-    public ServiceOrderInterface storeServiceOrder(Message message) {
-        return this.server.storeServiceOrder(message);
+    public ServiceOrderInterface storeServiceOrder(Message message) throws ParseException {
+        Message serverMessage = this.server.storeServiceOrder(message);
+
+        return this.messageToServiceOrder(serverMessage);
     }
 
     @Override
@@ -36,14 +43,22 @@ public class Client implements ClientInterface {
     }
 
     @Override
-    public ServiceOrderInterface getServiceOrder(Message message) {
-        return this.server.getServiceOrder(message);
+    public ServiceOrderInterface getServiceOrder(Message message) throws ParseException {
+        Message serverMessage = this.server.getServiceOrder(message);
+
+        if (serverMessage == null) {
+            return null;
+        }
+
+        return this.messageToServiceOrder(serverMessage);
     }
 
     @Override
     public ServiceOrderInterface updateServiceOrder(Message message) {
         try {
-            return this.server.updateServiceOrder(message);
+            Message serverMessage = this.server.updateServiceOrder(message);
+
+            return this.messageToServiceOrder(serverMessage);
         } catch (ParseException e) {
             return null;
         }
@@ -57,5 +72,22 @@ public class Client implements ClientInterface {
     @Override
     public int countServiceOrders() {
         return this.server.listServiceOrders().size();
+    }
+
+    private ServiceOrderInterface messageToServiceOrder(Message message) throws ParseException {
+        CompressedObject data = message.getData();
+        ServiceOrderInterface serviceOrder = new ServiceOrder();
+        int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
+
+        serviceOrder.setCode(code);
+        serviceOrder.setName(CompressionManager.decodeParameter(data.getValues()[1], data.getFrequencyTable()));
+        serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
+        
+        String decodedRequestTime = CompressionManager.decodeParameter(data.getValues()[3], data.getFrequencyTable());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+        Date requestTime = dateFormat.parse(decodedRequestTime);
+        serviceOrder.setRequestTime(requestTime);
+
+        return serviceOrder;
     }
 }

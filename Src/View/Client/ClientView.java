@@ -1,5 +1,6 @@
 package Src.View.Client;
 
+import java.text.ParseException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -30,7 +31,7 @@ public class ClientView {
         this.scanner = new Scanner(System.in);
     }
 
-    public void start() {
+    public void start() throws ParseException {
         while (true) {
             try {
                 System.out.println(BLUE + "\n--- Interface do Cliente ---" + RESET);
@@ -74,11 +75,13 @@ public class ClientView {
             } catch (InputMismatchException e) {
                 System.out.println(RED + "Opção inválida. Por favor, tente novamente." + RESET);
                 scanner.nextLine();
+            } catch (Exception e) {
+                System.out.println(RED + "ERRO INTERNO DO SERVIDOR." + e.getMessage() + RESET);
             }
         }
     }
 
-    public void storeServiceOrder() {
+    public void storeServiceOrder() throws ParseException {
         Message message = new Message();
 
         System.out.println("Digite os detalhes da ordem de serviço:");
@@ -114,7 +117,7 @@ public class ClientView {
         }
     }
 
-    public void getServiceOrderById() {
+    public void getServiceOrderById() throws ParseException {
         System.out.print(CYAN + ARROW + " Digite o ID da Ordem de Serviço: " + RESET);
         int id = scanner.nextInt();
         scanner.nextLine();

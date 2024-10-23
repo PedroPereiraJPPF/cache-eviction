@@ -1,5 +1,6 @@
 package Src.Domain.Client.Interface;
 
+import java.text.ParseException;
 import java.util.List;
 
 import Src.Domain.Server.Interface.ServerInterface;
@@ -11,9 +12,9 @@ import Src.Domain.ServiceOrder.ServiceOrderInterface;
  */
 public interface ClientInterface {
     public ServerInterface connectServer();
-    public ServiceOrderInterface storeServiceOrder(Message message);
+    public ServiceOrderInterface storeServiceOrder(Message message) throws ParseException;
     public boolean deleteServiceOrder(Message message);
-    public ServiceOrderInterface getServiceOrder(Message orderId);
+    public ServiceOrderInterface getServiceOrder(Message orderId) throws ParseException;
     public ServiceOrderInterface updateServiceOrder(Message message);
     public List<ServiceOrderInterface> listServiceOrders();
     public int countServiceOrders();
