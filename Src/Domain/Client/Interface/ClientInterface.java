@@ -16,6 +16,6 @@ public interface ClientInterface {
     public boolean deleteServiceOrder(Message message);
     public ServiceOrderInterface getServiceOrder(Message orderId) throws ParseException;
     public ServiceOrderInterface updateServiceOrder(Message message);
-    public List<ServiceOrderInterface> listServiceOrders();
+    public List<ServiceOrderInterface> listServiceOrders() throws ParseException;
     public int countServiceOrders();
 }

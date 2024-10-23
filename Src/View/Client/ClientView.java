@@ -164,7 +164,7 @@ public class ClientView {
         System.out.println(GREEN + "Ordem de serviço atualizada com sucesso. " + CHECK + RESET);
     }
 
-    public void listServiceOrders() {
+    public void listServiceOrders() throws ParseException {
         List<ServiceOrderInterface> orders = client.listServiceOrders();
         if (orders.isEmpty()) {
             System.out.println(RED + "Nenhuma ordem de serviço encontrada. " + CROSS + RESET);
@@ -176,7 +176,7 @@ public class ClientView {
         }
     }
 
-    public void countServiceOrders() {
+    public void countServiceOrders() throws ParseException {
         List<ServiceOrderInterface> orders = client.listServiceOrders();
         if (orders.isEmpty()) {
             System.out.println(RED + "Nenhuma ordem de serviço encontrada. " + CROSS + RESET);

@@ -6,7 +6,7 @@ public class Main {
         try {
             new ClientView().start();
         } catch(Exception e) {
-            new Logger("Logs/ServerLogs.log").error(e.getMessage() + " - " + e.getClass());
+            new Logger("Logs/ErrorLogs.log").error(e.getMessage() + " - " + e.getClass());
         }
     }
 }

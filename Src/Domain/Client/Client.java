@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.ArrayList;
 import Src.Domain.Client.Interface.ClientInterface;
 import Src.Domain.Server.Server;
 import Src.Domain.Server.Interface.ServerInterface;
@@ -65,8 +65,16 @@ public class Client implements ClientInterface {
     }
 
     @Override
-    public List<ServiceOrderInterface> listServiceOrders() {
-        return this.server.listServiceOrders();
+    public List<ServiceOrderInterface> listServiceOrders() throws ParseException {
+        List<ServiceOrderInterface> orders = new ArrayList<>();
+
+        List<Message> messages = this.server.listServiceOrders();
+
+        for (Message message : messages) {
+            orders.add(this.messageToServiceOrder(message));
+        }
+
+        return orders;
     }
 
     @Override

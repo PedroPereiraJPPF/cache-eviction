@@ -1,6 +1,7 @@
 package Src.Domain.Server;
 
 import java.util.List;
+import java.util.ArrayList;
 import Database.Cache.PriorityQueue.PriorityQueueCache;
 import Database.Data.Hash.HashDatabase;
 import Src.Domain.Server.Interface.ServerInterface;
@@ -34,8 +35,20 @@ public class Server implements ServerInterface {
     }
 
     @Override
-    public List<ServiceOrderInterface> listServiceOrders() {
-        return this.database.list();
+    public List<Message> listServiceOrders() {
+        List<ServiceOrderInterface> orders = this.database.list();
+        
+        List<Message> messages = new ArrayList<>();
+
+        for (ServiceOrderInterface order : orders) {
+            messages.add(new Message(
+                order.getCode(),
+                order.getName(),
+                order.getDescription(),
+                order.getRequestTime()));
+        }
+
+        return messages;
     }
 
     @Override
@@ -112,7 +125,7 @@ public class Server implements ServerInterface {
 
         int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
 
-        this.deleteServiceOrder(code);
+        this.database.delete(code);
 
         this.cache.printElements();
 
@@ -137,7 +150,7 @@ public class Server implements ServerInterface {
 
         int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
 
-        ServiceOrderInterface serviceOrder = this.getServiceOrder(code);
+        ServiceOrderInterface serviceOrder = this.database.search(code);
 
         if (serviceOrder == null)
             return null;

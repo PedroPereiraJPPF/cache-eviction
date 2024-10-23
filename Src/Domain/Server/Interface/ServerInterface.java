@@ -7,7 +7,7 @@ import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
 
 public interface ServerInterface {
-    public List<ServiceOrderInterface> listServiceOrders();
+    public List<Message> listServiceOrders();
     public Message getServiceOrder(Message message);
     public ServiceOrderInterface getServiceOrder(int code);
     public ServiceOrderInterface getServiceOrder(ServiceOrderInterface serviceOrder);
