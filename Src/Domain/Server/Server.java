@@ -1,7 +1,7 @@
 package Src.Domain.Server;
 
 import java.util.List;
-import Database.Cache.Hash.HashCache;
+import Database.Cache.PriorityQueue.PriorityQueueCache;
 import Database.Data.Hash.HashDatabase;
 import Src.Domain.Server.Interface.ServerInterface;
 import Src.Domain.Server.Message.CompressedObject;
@@ -9,27 +9,28 @@ import Src.Domain.Server.Message.CompressionManager;
 import Src.Domain.Server.Message.Message;
 import Src.Domain.ServiceOrder.ServiceOrder;
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
+
 import java.text.ParseException;
 
 public class Server implements ServerInterface {
     private HashDatabase database;
-    private HashCache cache;
+    private PriorityQueueCache cache;
 
     public Server() {
         this.database = new HashDatabase();
-        this.cache = new HashCache();
+        this.cache = new PriorityQueueCache(30);
 
-        // for (int i = 1; i <= 70; i++) {
-        //     ServiceOrder serviceOrder = new ServiceOrder();
-        //     serviceOrder.setName("Ordem de Serviço " + i);
-        //     serviceOrder.setDescription("Descrição da Ordem de Serviço " + i);
+        for (int i = 1; i <= 70; i++) {
+            ServiceOrder serviceOrder = new ServiceOrder();
+            serviceOrder.setName("Ordem de Serviço " + i);
+            serviceOrder.setDescription("Descrição da Ordem de Serviço " + i);
 
-        //     this.storeServiceOrder(serviceOrder);
-        // }
+            this.storeServiceOrder(serviceOrder);
+        }
 
-        // for (int i = 1; i <= 20; i++) {
-        //     this.getServiceOrder(i);
-        // }
+        for (int i = 1; i <= 30; i++) {
+            this.getServiceOrder(i);
+        }
     }
 
     @Override
@@ -90,6 +91,8 @@ public class Server implements ServerInterface {
         serviceOrder = this.database.insert(serviceOrder);
 
         Message compactedMessage = new Message(serviceOrder.getCode(), serviceOrder.getName(), serviceOrder.getDescription(), serviceOrder.getRequestTime());
+        
+        this.database.printAll();
 
         return compactedMessage;
     }
@@ -110,6 +113,10 @@ public class Server implements ServerInterface {
         int code = Integer.valueOf(CompressionManager.decodeParameter(data.getValues()[0], data.getFrequencyTable()));
 
         this.deleteServiceOrder(code);
+
+        this.cache.printElements();
+
+        this.database.printAll();
     }
 
     @Override
@@ -121,7 +128,7 @@ public class Server implements ServerInterface {
     public void deleteServiceOrder(ServiceOrderInterface serviceOrder) {
         this.database.delete(serviceOrder.getCode());
 
-        this.cache.delete(serviceOrder.getCode());
+        this.cache.remove(serviceOrder.getCode());
     }
 
     @Override
@@ -140,6 +147,8 @@ public class Server implements ServerInterface {
         serviceOrder.setDescription(CompressionManager.decodeParameter(data.getValues()[2], data.getFrequencyTable()));
 
         Message compactedMessage = new Message(serviceOrder.getCode(), serviceOrder.getName(), serviceOrder.getDescription(), serviceOrder.getRequestTime());
+
+        this.database.printAll();
 
         return compactedMessage;
     }

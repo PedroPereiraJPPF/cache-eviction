@@ -74,15 +74,6 @@ public class CustomLinkedList {
         return true;
     }
 
-    public void list() {
-        Node current = this.head;
-
-        while (current != null) {
-            System.out.println(current.value.getCode() + " - " + current.value.getName() + " -> ");
-            current = current.next;
-        }
-    }
-
     public Node getHead() {
         return this.head;
     }

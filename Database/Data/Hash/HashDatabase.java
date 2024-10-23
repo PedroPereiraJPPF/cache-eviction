@@ -5,12 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import Src.Domain.ServiceOrder.ServiceOrderInterface;
+import Utils.Logger;
 
 public class HashDatabase implements Serializable {
     private final float constA = 0.6180339887f; 
     private int capacity;
     private int size;
     private CustomLinkedList[] table;
+    private Logger logger = new Logger("Logs/DatabaseLogs.log");
     
     public HashDatabase() {
         this.capacity = 20;
@@ -122,5 +124,20 @@ public class HashDatabase implements Serializable {
 
     public long getCapacity() {
         return this.capacity;
+    }
+
+    public void printAll() {
+        this.logger.info("==== Database logs ====");
+       
+        Node current = null;
+        
+        for (CustomLinkedList item : this.table) {
+            current = item.getHead();
+
+            while (current != null) {
+                this.logger.info("Code: " + current.value.getCode());
+                current = current.next;
+            }
+        }
     }
 }
